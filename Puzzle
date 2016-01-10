@@ -1,0 +1,102 @@
+import java.awt.*;
+import java.awt.event.*;
+class Puzzle extends Frame implements ActionListener,Runnable
+ {
+     Panel pa;
+     Button[]btn=new Button[16];
+     int[]num =new int[16];
+     int bi=15;
+     Font fo;
+     Label l2;
+     Thread th;
+     public Puzzle()
+     {
+         super("PUZZLE!");
+         ra();
+         setSize(350,500);
+         setResizable(false);
+         setLayout(null);
+         Label l1=new Label("No. of clicks:-"); 
+         l1.setBounds(160,50,110,30);
+         add(l1);        
+         th=new Thread(this);
+	 th.start();
+         click();
+         fo=new Font("Algerian",1,16);
+         setFont(fo);
+         pa=new Panel();
+         pa.setBounds(50,100,250,350);
+         pa.setLayout(new GridLayout(4,4));
+         add(pa);
+         for(int ctr=0;ctr<btn.length;ctr++)
+         {
+             btn[ctr]=new Button(String.valueOf(num[ctr]));
+             btn[ctr].setBackground(Color.blue);
+             btn[ctr].setForeground(Color.white);
+             btn[ctr].addActionListener(this);
+             pa.add(btn[ctr]);
+         }
+         btn[15].setLabel("");
+         setVisible(true);
+     }
+     private void ra()
+     {
+        int c=-1;
+       do
+       {
+          int x= (int)(Math.random()*15+1);
+          int i=0;
+          for(;i<=c && x!=num[i];i++);
+          if(i>c)
+          {
+             num[++c]=x;
+          }
+       }while(c<14);
+     }
+               int ctr=0;
+     public void actionPerformed(ActionEvent evt)          
+     {
+         Button bc=(Button)evt.getSource();
+         int ci=0;
+         for(;bc!=btn[ci];ci++);
+            if(bi-ci==4||bi-ci==-4||bi-ci==-1||bi-ci==1)
+            {
+               btn[bi].setLabel(bc.getLabel()); 
+               bc.setLabel("");   
+               bi=ci;      
+            }
+            if(evt.getSource()==bc)
+            {
+                ctr++;
+                l2.setText(String.valueOf(ctr));
+            }           
+    }
+    private void click()
+    {
+         l2=new Label("0");
+         l2.setBounds(280,50,50,30);
+         add(l2);
+    }
+    public void run()
+    {
+         while(th!=null)
+         {
+               int r=(int)(Math.random()*255);
+               int g=(int)(Math.random()*255);
+               int b=(int)(Math.random()*255);
+               setBackground(new Color(r,g,b));  
+               try
+               {
+                    th.sleep(1000);
+               }
+               catch(Exception ex)
+               {
+                    System.out.println(ex.getMessage());
+               }    
+         }
+    }
+     public static void main(String []args)
+     {
+          Thread obj=new Thread(new Puzzle());
+     }
+ }
